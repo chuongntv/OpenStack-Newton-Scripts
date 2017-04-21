@@ -33,11 +33,6 @@ source /etc/network/interfaces.d/*
 auto lo
 iface lo inet loopback
 
-auto $MGNT_INTERFACE
-iface $MGNT_INTERFACE inet static
-    address $CTL_MGNT_IP
-    netmask $NETMASK_ADD_MGNT
-
 # The primary network interface
 auto $EXT_INTERFACE
 iface $EXT_INTERFACE inet static
@@ -46,11 +41,6 @@ iface $EXT_INTERFACE inet static
     gateway $GATEWAY_IP_EXT
     dns-nameservers 8.8.8.8
 
-# DATA VM
-auto $DATA_INTERFACE
-iface $DATA_INTERFACE inet static
-    address $CTL_DATA_IP
-    netmask $NETMASK_ADD_DATA
 EOF
 
     elif [ "$1" == "compute1" ]; then
@@ -79,11 +69,6 @@ iface $EXT_INTERFACE inet static
     gateway $GATEWAY_IP_EXT
     dns-nameservers 8.8.8.8
 
-auto $DATA_INTERFACE
-iface $DATA_INTERFACE inet static
-    address $COM1_DATA_IP
-    netmask $NETMASK_ADD_DATA
-
 EOF
 
     elif [ "$1" == "compute2" ]; then
@@ -98,12 +83,6 @@ source /etc/network/interfaces.d/*
 auto lo
 iface lo inet loopback
 
-auto $MGNT_INTERFACE
-iface $MGNT_INTERFACE inet static
-    address $COM2_MGNT_IP
-    netmask $NETMASK_ADD_MGNT
-
-
 # The primary network interface
 auto $EXT_INTERFACE
 iface $EXT_INTERFACE inet static
@@ -111,11 +90,6 @@ iface $EXT_INTERFACE inet static
     netmask $NETMASK_ADD_EXT
     gateway $GATEWAY_IP_EXT
     dns-nameservers 8.8.8.8
-
-auto $DATA_INTERFACE
-iface $DATA_INTERFACE inet static
-    address $COM2_DATA_IP
-    netmask $NETMASK_ADD_DATA
 
 EOF
 
@@ -151,24 +125,21 @@ function setup_hosts {
     test -f $path_hosts.orig || cp $path_hosts $path_hosts.orig
     if [ "$1" == "controller" ]; then
         echo "127.0.0.1       localhost $HOST_CTL" > $path_hosts
-        echo "$CTL_MGNT_IP    $HOST_CTL" >> $path_hosts
-        echo "$COM1_MGNT_IP   $HOST_COM1" >> $path_hosts
-        echo "$COM2_MGNT_IP   $HOST_COM2" >> $path_hosts
-        echo "$CIN_MGNT_IP    $HOST_CIN" >> $path_hosts
+        echo "$CTL_EXT_IP    $HOST_CTL" >> $path_hosts
+        echo "$COM1_EXT_IP   $HOST_COM1" >> $path_hosts
+        echo "$COM2_EXT_IP   $HOST_COM2" >> $path_hosts
     
     elif [ "$1" == "compute1" ]; then
         echo "127.0.0.1       localhost $HOST_COM1" > $path_hosts
-        echo "$CTL_MGNT_IP    $HOST_CTL" >> $path_hosts
-        echo "$COM1_MGNT_IP   $HOST_COM1" >> $path_hosts
-        echo "$COM2_MGNT_IP   $HOST_COM2" >> $path_hosts
-        echo "$CIN_MGNT_IP    $HOST_CIN" >> $path_hosts
+        echo "$CTL_EXT_IP    $HOST_CTL" >> $path_hosts
+        echo "$COM1_EXT_IP   $HOST_COM1" >> $path_hosts
+        echo "$COM2_EXT_IP   $HOST_COM2" >> $path_hosts
 
     elif [ "$1" == "compute2" ]; then
         echo "127.0.0.1       localhost $HOST_COM2" > $path_hosts
-        echo "$CTL_MGNT_IP    $HOST_CTL" >> $path_hosts
-        echo "$COM1_MGNT_IP   $HOST_COM1" >> $path_hosts
-        echo "$COM2_MGNT_IP   $HOST_COM2" >> $path_hosts
-        echo "$CIN_MGNT_IP    $HOST_CIN" >> $path_hosts
+        echo "$CTL_EXT_IP    $HOST_CTL" >> $path_hosts
+        echo "$COM1_EXT_IP   $HOST_COM1" >> $path_hosts
+        echo "$COM2_EXT_IP   $HOST_COM2" >> $path_hosts
 
     else
         echocolor "setup hostname sai roi"
